@@ -85,6 +85,10 @@ legend {
 	margin-bottom: 1.125em;
 }
 
+fieldset:first-of-type legend {
+	border: none;
+}
+
 input[type="text"],
 input[type="email"],
 legend {
@@ -134,6 +138,10 @@ input:hover {
 
 select:hover, select:focus {
 	border-color: var(--color-blue);
+}
+
+::placeholder {
+	color: var(--color-med-green);
 }
 
 input[type="checkbox"],

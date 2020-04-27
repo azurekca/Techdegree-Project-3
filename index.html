@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Register for Full Stack Conf</title>
+  <title>Register for Full Stack Conf</title>
+  <link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 	<div class="container">
-    
+
     <header>
       <span>Register for</span>
       <h1>Full Stack Conf</h1>
@@ -20,7 +21,7 @@
         <legend>Basic Info</legend>
         
         <label for="name">Name:</label>
-        <input type="text" id="name" name="user-name">
+        <input type="text" id="name" name="user-name" autofocus>
         
         <label for="mail">Email:</label>
         <input type="email" id="mail" name="user-email">
@@ -32,8 +33,9 @@
           <option value="back-end developer">Back End Developer</option>
           <option value="designer">Designer</option>          
           <option value="student">Student</option>
-          <option value="other">Other</option>  
+          <option value="other">Other</option>
         </select>           
+        <input type="text" name="other" id="other-title" placeholder="Your job role">
       </fieldset>
       
       <fieldset class="shirt">
@@ -102,7 +104,7 @@
             <input type="checkbox" name="npm" data-day-and-time="Wednesday 1pm-4pm" data-cost="100"> 
             npm Workshop — Wednesday 1pm-4pm, $100
           </label>
-                  	
+          <span id="activities-total"></span>	
       </fieldset>
       <fieldset>
         <legend>Payment Info</legend>
@@ -149,11 +151,11 @@
           </select>
           <label for="exp-year">Expiration Year:</label>
           <select id="exp-year" name="user-exp-year">
-            <option value="2016">2016</option>
-            <option value="2017">2017</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>        		          
+            <option value="2016">2020</option>
+            <option value="2017">2021</option>
+            <option value="2018">2022</option>
+            <option value="2019">2023</option>
+            <option value="2020">2024</option>        		          
           </select> 	                  	         
         </div>
 
