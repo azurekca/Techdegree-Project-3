@@ -190,7 +190,7 @@ select option {
 }
 
 .activities label {
-	transition: all .4s linear;
+	transition: all .3s linear;
 }
 
 .checked {
@@ -203,6 +203,15 @@ select option {
 
 .activities .disabled:hover {
 	background-color: inherit;
+}
+
+.total {
+	display: block;
+	background-color: var(--color-med-green);
+	margin-top: 0.5em;
+	padding: 0.5em;
+	text-align: center;
+	color: var(--color-dark-blue);
 }
 
 /* ================================= 

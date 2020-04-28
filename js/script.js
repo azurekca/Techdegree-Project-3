@@ -13,12 +13,24 @@ const selectTitle = document.getElementById('title');
 const otherJobRoleInput = document.getElementById('other-title');
 const shirtDesignSelect = document.getElementById('design');
 const activityCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
+const paymentSelect = document.getElementById('payment');
+const spanTotal = document.createElement('span');
+spanTotal.classList.add('total');
+document.querySelector('.activities').appendChild(spanTotal);
 
 document.addEventListener('DOMContentLoaded', () => {
 	otherJobRoleInput.style.display = 'none';
 	setShirtColorOptions();
 	// if user reloads page, reset the color dropdown
 	shirtDesignSelect.options[0].selected = true;
+	// hide span that displays the total
+	spanTotal.style.display = 'none';
+	// select credit card payment method as default
+	paymentSelect.options[1].selected = true;
+	// disable 'select payment method' option
+  paymentSelect.options[0].disabled = true;
+  // show credit card payment section and hide the rest
+  displayPayment('credit-card');
 });
 
 /* ”Job Role” section */
@@ -79,12 +91,7 @@ shirtDesignSelect.addEventListener('change', function() {
 	}
 });
 
-/* ”Register for Activities” section
-
-As a user selects activities, a running total should display below the list of checkboxes. For example, if the user selects "Main Conference", then Total: $200 should appear. If they add 1 workshop, the total should change to Total: $300. */
-const spanTotal = document.createElement('span');
-spanTotal.classList.add('total');
-document.querySelector('.activities').appendChild(spanTotal);
+/* ”Register for Activities” section */
 
 // add event listener to all the checkboxes
 for (let i = 0; i < activityCheckboxes.length; i++) {
@@ -92,10 +99,16 @@ for (let i = 0; i < activityCheckboxes.length; i++) {
 		// add checked class
 		event.target.parentElement.classList.toggle('checked');
 		disableConflictingActivities();
-		// keep track of the running total
-		totalCost();
-    // <span id="activities-total"></span>
-    spanTotal.textContent = `Your total cost: $${totalCost()}`;
+		//update the total cost when user checks/unchecks activities
+		const cost = totalCost();
+		// update form to display total cost
+		if (cost > 0) {
+			spanTotal.textContent = `Your total cost: $${cost}`;
+			spanTotal.style.display = '';
+		} else {
+			// if no activities selected, hide the displayed total
+			spanTotal.style.display = 'none';
+		}
 	});
 }
 
@@ -128,15 +141,20 @@ function totalCost() {
 	return total;
 }
 
-/* "Payment Info" section
+/* "Payment Info" section */
 
-    Display payment sections based on the payment option chosen in the select menu.
-    The "Credit Card" payment option should be selected by default. Display the #credit-card div, and hide the "PayPal" and "Bitcoin" information. Payment option in the select menu should match the payment option displayed on the page.
-    When a user selects the "PayPal" payment option, the PayPal information should display, and the credit card and “Bitcoin” information should be hidden.
-    When a user selects the "Bitcoin" payment option, the Bitcoin information should display, and the credit card and “PayPal” information should be hidden.
+paymentSelect.addEventListener('change', () => {
+  const selected = paymentSelect.value.replace(' ', '-');
+  displayPayment(selected);
+});
 
-NOTE: The user should not be able to select the "Select Payment Method" option from the payment select menu, because the user should not be able to submit the form without a chosen payment option. */
-
+function displayPayment(paymentOption) {
+	for (let i = 1; i < paymentSelect.options.length; i++) {
+		const option = paymentSelect.options[i].value.replace(' ', '-');
+		document.getElementById(option).style.display = 'none';
+	}
+	document.getElementById(paymentOption).style.display = '';
+}
 /* Form Validation
 
 If any of the following validation errors exist, prevent the user from submitting the form:
