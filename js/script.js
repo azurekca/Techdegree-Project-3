@@ -9,11 +9,19 @@ FSJS project 3 - Interactive Form
         The “Other” text field under the "Job Role" section should be visible
         All information for Bitcoin, PayPal or Credit Card payments should be visible. */
 
-/* ”Job Role” section */
-
 const selectTitle = document.getElementById('title');
 const otherJobRoleInput = document.getElementById('other-title');
-otherJobRoleInput.style.display = 'none';
+const shirtDesignSelect = document.getElementById('design');
+const activityCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
+
+document.addEventListener('DOMContentLoaded', () => {
+	otherJobRoleInput.style.display = 'none';
+	setShirtColorOptions();
+	// if user reloads page, reset the color dropdown
+	shirtDesignSelect.options[0].selected = true;
+});
+
+/* ”Job Role” section */
 selectTitle.addEventListener('change', function() {
 	// if other was selected, show other input field
 	if (this.value === 'other') {
@@ -24,7 +32,6 @@ selectTitle.addEventListener('change', function() {
 });
 
 /* ”T-Shirt Info” section */
-
 function setShirtColorOptions(design = 'none') {
 	const shirtColors = document.getElementById('color');
 	let selectedFlag = false;
@@ -56,14 +63,11 @@ function setShirtColorOptions(design = 'none') {
 	}
 }
 
-setShirtColorOptions();
-
-const shirtDesignSelect = document.getElementById('design');
 shirtDesignSelect.addEventListener('change', function() {
 	switch (this.value) {
 		case 'js puns':
 			// display js pun shirt options
-			setShirtColorOptions('JS Puns');
+			setShirtColorOptions('Puns');
 			// show color dropdown
 			break;
 		case 'heart js':
@@ -81,6 +85,45 @@ Some events are at the same day and time as others. If the user selects a worksh
 When a user unchecks an activity, make sure that competing activities (if there are any) are no longer disabled.
 As a user selects activities, a running total should display below the list of checkboxes. For example, if the user selects "Main Conference", then Total: $200 should appear. If they add 1 workshop, the total should change to Total: $300. */
 
+// add event listener to all the checkboxes
+for (let i = 0; i < activityCheckboxes.length; i++) {
+	activityCheckboxes[i].addEventListener('change', () => {
+		const checkedActivities = getCheckedActivities();
+		// console.log(checkedActivities);
+		disableConflictingActivities();
+      // keep track of the running total
+      // <span id="activities-total"></span>
+      
+	});
+}
+
+// get an array of the checked activities
+function getCheckedActivities() {
+	const checkedActivities = [];
+	// loop through checked activities and return false if more than one activity has the same data-day-and-time
+	for (let i = 0; i < activityCheckboxes.length; i++) {
+		if (activityCheckboxes[i].checked) {
+			checkedActivities.push(activityCheckboxes[i]);
+		}
+	}
+	return checkedActivities;
+}
+
+function disableConflictingActivities() {
+  // search through options and if there is a match toggle disabled
+  const checkedDayAndTime = event.target.dataset.dayAndTime;
+  const checkboxName = event.target.name;
+  console.log(checkedDayAndTime, checkboxName);
+  if (checkedDayAndTime) {
+    // loop through all checkboxes to see if there is a match
+    for (let i = 0; i < activityCheckboxes.length; i++) {
+      if (checkboxName !== activityCheckboxes[i].name &&
+          checkedDayAndTime === activityCheckboxes[i].dataset.dayAndTime) {
+            activityCheckboxes[i].disabled = !(activityCheckboxes[i].disabled);
+      }
+    }
+  }
+}
 /* "Payment Info" section
 
     Display payment sections based on the payment option chosen in the select menu.
