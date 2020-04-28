@@ -24,13 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	// if user reloads page, reset the color dropdown
 	shirtDesignSelect.options[0].selected = true;
 	// hide span that displays the total
-	spanTotal.style.display = 'none';
+	spanTotal.classList.add('hide');
 	// select credit card payment method as default
 	paymentSelect.options[1].selected = true;
 	// disable 'select payment method' option
-  paymentSelect.options[0].disabled = true;
-  // show credit card payment section and hide the rest
-  displayPayment('credit-card');
+	paymentSelect.options[0].disabled = true;
+	// show credit card payment section and hide the rest
+	displayPayment('credit-card');
 });
 
 /* ”Job Role” section */
@@ -104,10 +104,11 @@ for (let i = 0; i < activityCheckboxes.length; i++) {
 		// update form to display total cost
 		if (cost > 0) {
 			spanTotal.textContent = `Your total cost: $${cost}`;
-			spanTotal.style.display = '';
+			spanTotal.classList.remove('hide');
 		} else {
 			// if no activities selected, hide the displayed total
-			spanTotal.style.display = 'none';
+			spanTotal.textContent = '';
+			spanTotal.classList.add('hide');
 		}
 	});
 }
@@ -144,8 +145,8 @@ function totalCost() {
 /* "Payment Info" section */
 
 paymentSelect.addEventListener('change', () => {
-  const selected = paymentSelect.value.replace(' ', '-');
-  displayPayment(selected);
+	const selected = paymentSelect.value.replace(' ', '-');
+	displayPayment(selected);
 });
 
 function displayPayment(paymentOption) {

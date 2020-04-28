@@ -44,10 +44,6 @@ h1 {
 	letter-spacing: 0.07rem;
 }
 
-span {
-	font-size: 1.3em;
-}
-
 a {
 	text-decoration: none;
 }
@@ -212,6 +208,17 @@ select option {
 	padding: 0.5em;
 	text-align: center;
 	color: var(--color-dark-blue);
+	font-size: 1.3em;
+	border-radius: 4px;
+	height: 41.6px;
+	transition: all 0.2s linear;
+	overflow: hidden;
+}
+
+.hide {
+	margin-top: 0;
+	padding: 0;
+	height: 0;
 }
 
 /* ================================= 
