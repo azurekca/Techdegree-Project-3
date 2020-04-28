@@ -189,6 +189,10 @@ select option {
 	font-weight: 400;
 }
 
+.activities label {
+	transition: all .4s linear;
+}
+
 .checked {
 	background-color: var(--color-super-pale-pink);
 }
