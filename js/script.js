@@ -88,7 +88,9 @@ As a user selects activities, a running total should display below the list of c
 // add event listener to all the checkboxes
 for (let i = 0; i < activityCheckboxes.length; i++) {
 	activityCheckboxes[i].addEventListener('change', () => {
-		const checkedActivities = getCheckedActivities();
+    const checkedActivities = getCheckedActivities();
+    // add checked class
+    event.target.parentElement.classList.toggle('checked');
 		// console.log(checkedActivities);
 		disableConflictingActivities();
       // keep track of the running total
@@ -120,6 +122,7 @@ function disableConflictingActivities() {
       if (checkboxName !== activityCheckboxes[i].name &&
           checkedDayAndTime === activityCheckboxes[i].dataset.dayAndTime) {
             activityCheckboxes[i].disabled = !(activityCheckboxes[i].disabled);
+            activityCheckboxes[i].parentElement.classList.toggle('disabled');
       }
     }
   }

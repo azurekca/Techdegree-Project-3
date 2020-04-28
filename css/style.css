@@ -162,10 +162,6 @@ input[type="checkbox"] {
 	background-color: var(--color-super-pale-pink);
 }
 
-input[type="checkbox"]:checked {
-	color: var(--color-pink)
-}
-
 button {
 	color: var(--color-pale-yellow);
 	padding: .55em 1.25em;
@@ -191,6 +187,18 @@ option {
 
 select option {
 	font-weight: 400;
+}
+
+.checked {
+	background-color: var(--color-super-pale-pink);
+}
+
+.activities .disabled {
+	color: var(--color-med-green);
+}
+
+.activities .disabled:hover {
+	background-color: inherit;
 }
 
 /* ================================= 
