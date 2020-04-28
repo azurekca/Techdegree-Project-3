@@ -81,52 +81,53 @@ shirtDesignSelect.addEventListener('change', function() {
 
 /* ”Register for Activities” section
 
-Some events are at the same day and time as others. If the user selects a workshop, don't allow selection of a workshop at the same day and time -- you should disable the checkbox and visually indicate that the workshop in the competing time slot isn't available.
-When a user unchecks an activity, make sure that competing activities (if there are any) are no longer disabled.
 As a user selects activities, a running total should display below the list of checkboxes. For example, if the user selects "Main Conference", then Total: $200 should appear. If they add 1 workshop, the total should change to Total: $300. */
+const spanTotal = document.createElement('span');
+spanTotal.classList.add('total');
+document.querySelector('.activities').appendChild(spanTotal);
 
 // add event listener to all the checkboxes
 for (let i = 0; i < activityCheckboxes.length; i++) {
 	activityCheckboxes[i].addEventListener('change', () => {
-    const checkedActivities = getCheckedActivities();
-    // add checked class
-    event.target.parentElement.classList.toggle('checked');
-		// console.log(checkedActivities);
+		// add checked class
+		event.target.parentElement.classList.toggle('checked');
 		disableConflictingActivities();
-      // keep track of the running total
-      // <span id="activities-total"></span>
-      
+		// keep track of the running total
+		totalCost();
+    // <span id="activities-total"></span>
+    spanTotal.textContent = `Your total cost: $${totalCost()}`;
 	});
 }
 
-// get an array of the checked activities
-function getCheckedActivities() {
-	const checkedActivities = [];
-	// loop through checked activities and return false if more than one activity has the same data-day-and-time
-	for (let i = 0; i < activityCheckboxes.length; i++) {
-		if (activityCheckboxes[i].checked) {
-			checkedActivities.push(activityCheckboxes[i]);
+function disableConflictingActivities() {
+	// search through options and if there is a match to the checkbox that was just changed, toggle disabled
+	const checkedDayAndTime = event.target.dataset.dayAndTime;
+	const checkboxName = event.target.name;
+	if (checkedDayAndTime) {
+		// loop through all checkboxes to see if there is a match
+		for (let i = 0; i < activityCheckboxes.length; i++) {
+			if (
+				checkboxName !== activityCheckboxes[i].name &&
+				checkedDayAndTime === activityCheckboxes[i].dataset.dayAndTime
+			) {
+				activityCheckboxes[i].disabled = !activityCheckboxes[i].disabled;
+				activityCheckboxes[i].parentElement.classList.toggle('disabled');
+			}
 		}
 	}
-	return checkedActivities;
 }
 
-function disableConflictingActivities() {
-  // search through options and if there is a match toggle disabled
-  const checkedDayAndTime = event.target.dataset.dayAndTime;
-  const checkboxName = event.target.name;
-  console.log(checkedDayAndTime, checkboxName);
-  if (checkedDayAndTime) {
-    // loop through all checkboxes to see if there is a match
-    for (let i = 0; i < activityCheckboxes.length; i++) {
-      if (checkboxName !== activityCheckboxes[i].name &&
-          checkedDayAndTime === activityCheckboxes[i].dataset.dayAndTime) {
-            activityCheckboxes[i].disabled = !(activityCheckboxes[i].disabled);
-            activityCheckboxes[i].parentElement.classList.toggle('disabled');
-      }
-    }
-  }
+function totalCost() {
+	let total = 0;
+	// loop over checked activites and sum up the total
+	for (let i = 0; i < activityCheckboxes.length; i++) {
+		if (activityCheckboxes[i].checked) {
+			total += +activityCheckboxes[i].dataset.cost;
+		}
+	}
+	return total;
 }
+
 /* "Payment Info" section
 
     Display payment sections based on the payment option chosen in the select menu.
