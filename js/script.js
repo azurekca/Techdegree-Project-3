@@ -9,8 +9,6 @@ FSJS project 3 - Interactive Form
         The “Other” text field under the "Job Role" section should be visible
         All information for Bitcoin, PayPal or Credit Card payments should be visible. */
 
-let isValid = false;
-
 const form = document.querySelector('form');
 const userNameInput = document.getElementById('name');
 const userEmailInput = document.getElementById('mail');
@@ -19,17 +17,15 @@ const otherJobRoleInput = document.getElementById('other-title');
 const shirtDesignSelect = document.getElementById('design');
 const activityCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
 const paymentSelect = document.getElementById('payment');
-const totalSpan = document.createElement('span');
-totalSpan.classList.add('total');
-document.querySelector('.activities').appendChild(totalSpan);
+const activitySpan = document.createElement('span');
+activitySpan.classList.add('total');
+document.querySelector('.activities').appendChild(activitySpan);
 
 document.addEventListener('DOMContentLoaded', () => {
 	otherJobRoleInput.style.display = 'none';
 	setShirtColorOptions();
-	// if user reloads page, reset the color dropdown
-	shirtDesignSelect.options[0].selected = true;
 	// hide span that displays the total
-	totalSpan.classList.add('hide');
+	activitySpan.classList.add('hide');
 	// select credit card payment method as default
 	paymentSelect.options[1].selected = true;
 	// disable 'select payment method' option
@@ -108,12 +104,12 @@ for (let i = 0; i < activityCheckboxes.length; i++) {
 		const cost = totalCost();
 		// update form to display total cost
 		if (cost > 0) {
-			totalSpan.textContent = `Your total cost: $${cost}`;
-			totalSpan.classList.remove('hide');
+			activitySpan.textContent = `Your total cost: $${cost}`;
+			activitySpan.classList = 'total';
 		} else {
 			// if no activities selected, hide the displayed total
-			totalSpan.textContent = '';
-			totalSpan.classList.add('hide');
+			activitySpan.textContent = '';
+			activitySpan.classList.add('hide');
 		}
 	});
 }
@@ -175,15 +171,37 @@ If any of the following validation errors exist, prevent the user from submittin
         - The Zip Code field should accept a 5-digit number.
         - The CVV should only accept a number that is exactly 3 digits long. 
         
-  Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.*/
-function isNameValid() {
-	return userNameInput.value.length > 0;
+	Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.*/
+
+function toggleInputValidationTip(test, element, message) {
+	if (!test) {
+		element.classList.add('invalid');
+		element.placeholder = message;
+	} else {
+		element.classList.remove('invalid');
+		element.placeholder = '';
+		return true;
+	}
 }
 
-function isActivityChecked() {
+function nameEntered() {
+	if (toggleInputValidationTip(userNameInput.value.length > 0, userNameInput, 'Please enter your name')) return true;
+}
+
+function emailEntered() {
+	if (toggleInputValidationTip(userEmailInput.value.length > 0, userEmailInput, 'Please enter your email'))
+		return true;
+}
+
+function activityChecked() {
 	for (let i = 0; i < activityCheckboxes.length; i++) {
 		if (activityCheckboxes[i].checked) {
 			return true;
+		} else {
+			// show error message
+			activitySpan.textContent = 'Please select at least one activity';
+			activitySpan.classList.add('invalid');
+			activitySpan.classList.remove('hide');
 		}
 	}
 }
@@ -208,6 +226,23 @@ function isCVVvalid(cvv) {
 }
 
 form.addEventListener('submit', () => {
+	let isValid = false;
+	let scrollTo;
+	const name = nameEntered();
+	const email = emailEntered();
+	if (activityChecked()) {
+		isValid = true;
+	} else {
+		scrollTo = document.querySelector('.activities')
+	}
+	// if (name && email) {
+	// 	isValid = true;
+	// } else {
+	// 	isValid = false;
+	// 	scrollTo = document.querySelector('fieldset');
+	// }
+
+	if (scrollTo) scrollTo.scrollIntoView({ behavior: 'smooth' });
 	if (!isValid) event.preventDefault();
 });
 
@@ -222,6 +257,6 @@ form.addEventListener('submit', () => {
         Zip Code (Only if Credit Card payment method is selected)
         CVV (Only if Credit Card payment method is selected)
 
-Note: Error messages or indications should not be visible by default. They should only show upon submission, or after some user interaction.
+
 
 Note: If a user tries to submit an empty form, there should be an error indication or message displayed for the name field, the email field, the activity section, and the credit card fields if credit card is the selected payment method. */
