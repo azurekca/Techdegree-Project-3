@@ -9,14 +9,19 @@ FSJS project 3 - Interactive Form
         The “Other” text field under the "Job Role" section should be visible
         All information for Bitcoin, PayPal or Credit Card payments should be visible. */
 
-const selectTitle = document.getElementById('title');
+let isValid = false;
+
+const form = document.querySelector('form');
+const userNameInput = document.getElementById('name');
+const userEmailInput = document.getElementById('mail');
+const userTitleSelect = document.getElementById('title');
 const otherJobRoleInput = document.getElementById('other-title');
 const shirtDesignSelect = document.getElementById('design');
 const activityCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
 const paymentSelect = document.getElementById('payment');
-const spanTotal = document.createElement('span');
-spanTotal.classList.add('total');
-document.querySelector('.activities').appendChild(spanTotal);
+const totalSpan = document.createElement('span');
+totalSpan.classList.add('total');
+document.querySelector('.activities').appendChild(totalSpan);
 
 document.addEventListener('DOMContentLoaded', () => {
 	otherJobRoleInput.style.display = 'none';
@@ -24,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// if user reloads page, reset the color dropdown
 	shirtDesignSelect.options[0].selected = true;
 	// hide span that displays the total
-	spanTotal.classList.add('hide');
+	totalSpan.classList.add('hide');
 	// select credit card payment method as default
 	paymentSelect.options[1].selected = true;
 	// disable 'select payment method' option
@@ -34,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ”Job Role” section */
-selectTitle.addEventListener('change', function() {
+userTitleSelect.addEventListener('change', function() {
 	// if other was selected, show other input field
 	if (this.value === 'other') {
 		otherJobRoleInput.style.display = '';
@@ -103,12 +108,12 @@ for (let i = 0; i < activityCheckboxes.length; i++) {
 		const cost = totalCost();
 		// update form to display total cost
 		if (cost > 0) {
-			spanTotal.textContent = `Your total cost: $${cost}`;
-			spanTotal.classList.remove('hide');
+			totalSpan.textContent = `Your total cost: $${cost}`;
+			totalSpan.classList.remove('hide');
 		} else {
 			// if no activities selected, hide the displayed total
-			spanTotal.textContent = '';
-			spanTotal.classList.add('hide');
+			totalSpan.textContent = '';
+			totalSpan.classList.add('hide');
 		}
 	});
 }
@@ -153,22 +158,58 @@ function displayPayment(paymentOption) {
 	for (let i = 1; i < paymentSelect.options.length; i++) {
 		const option = paymentSelect.options[i].value.replace(' ', '-');
 		document.getElementById(option).style.display = 'none';
+		document.getElementById(option).classList.add('hide');
 	}
 	document.getElementById(paymentOption).style.display = '';
+	document.getElementById(paymentOption).classList.remove('hide');
 }
 /* Form Validation
 
 If any of the following validation errors exist, prevent the user from submitting the form:
 
-    Name field can't be blank.
-    Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, just that it's formatted like one: dave@teamtreehouse.com for example.
-    User must select at least one checkbox under the "Register for Activities" section of the form.
-    If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
-        Credit Card field should only accept a number between 13 and 16 digits.
-        The Zip Code field should accept a 5-digit number.
-        The CVV should only accept a number that is exactly 3 digits long. 
+    - Name field can't be blank.
+    - Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, just that it's formatted like one: dave@teamtreehouse.com for example. \w+@\w+\.\w
+    - User must select at least one checkbox under the "Register for Activities" section of the form.
+    - If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
+        - Credit Card field should only accept a number between 13 and 16 digits.
+        - The Zip Code field should accept a 5-digit number.
+        - The CVV should only accept a number that is exactly 3 digits long. 
         
   Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.*/
+function isNameValid() {
+	return userNameInput.value.length > 0;
+}
+
+function isActivityChecked() {
+	for (let i = 0; i < activityCheckboxes.length; i++) {
+		if (activityCheckboxes[i].checked) {
+			return true;
+		}
+	}
+}
+
+function isEmailValid(email) {
+	return /^[^@]+@[^@]+\.[a-z]+$/i.test(email);
+}
+
+function isCreditCardValid(cc) {
+	// Credit card is between 13 and 16 digits
+	return /^\d{13, 16}$/.test(cc);
+}
+
+function isMailingCodeValid(code) {
+	// Zip Code is 5-digits
+	// or Postal Code is letter/number/letter[optional space]number/letter/number
+	return /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i.test(code);
+}
+function isCVVvalid(cvv) {
+	// CVV is 3 digits
+	return /^\d{3}$/.test(cvv);
+}
+
+form.addEventListener('submit', () => {
+	if (!isValid) event.preventDefault();
+});
 
 /* Form validation messages
 

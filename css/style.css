@@ -132,7 +132,8 @@ input:hover {
 	transition: border-color .4s, background-color .4s;
 }
 
-select:hover, select:focus {
+select:hover,
+select:focus {
 	border-color: var(--color-blue);
 }
 
@@ -152,6 +153,7 @@ input[type="checkbox"] {
 .activities label {
 	margin: 0;
 	font-size: 1.2em;
+	transition: all .3s linear;
 }
 
 .activities label:hover {
@@ -170,7 +172,8 @@ button {
 	width: 100%;
 }
 
-button:hover, button:focus {
+button:hover,
+button:focus {
 	letter-spacing: 0.05em;
 	background: var(--color-pink);
 }
@@ -183,10 +186,6 @@ option {
 
 select option {
 	font-weight: 400;
-}
-
-.activities label {
-	transition: all .3s linear;
 }
 
 .checked {
@@ -216,7 +215,6 @@ select option {
 }
 
 .hide {
-	margin-top: 0;
 	padding: 0;
 	height: 0;
 }
