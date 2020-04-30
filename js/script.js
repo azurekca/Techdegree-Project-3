@@ -5,6 +5,7 @@ FSJS project 3 - Interactive Form
 
 // Global variables for form elements
 const form = document.querySelector('form');
+const inputs = document.getElementsByTagName('input');
 // Basic info elements
 const userNameInput = document.getElementById('name');
 const userEmailInput = document.getElementById('mail');
@@ -24,7 +25,34 @@ const ccNumInput = document.getElementById('cc-num');
 const zipInput = document.getElementById('zip');
 const cvvInput = document.getElementById('cvv');
 
+const validators = {
+	name  : {
+		regex         : /^[a-z]+$/i,
+		badPatternTip : 'Name can only contain letters',
+		emptyTip      : 'Please enter your name'
+	},
+	mail  : {
+		regex         : /^[^@]+@[^@]+\.[a-z]+$/i,
+		badPatternTip : 'Please enter a valid email: "person@sample.com"',
+		emptyTip      : 'Please enter your email'
+	},
+	ccnum : {
+		regex         : /^(\d{4} ?){3}\d{1,4}$/,
+		badPatternTip : 'A valid credit card number is between 13 and 16 digits',
+		emptyTip      : 'Please enter your credit card information'
+	},
+	zip   : {
+		regex         : /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i,
+		badPatternTip : 'Please a Zip code: 5-digits or Postal Code: "A0A 0A0"'
+	},
+	cvv   : {
+		regex         : /^\d{3}$/,
+		badPatternTip : 'Please enter the 3-digit CVV that can be found on the back of your card'
+	}
+};
+
 function init() {
+	setupInputListeners(validators);
 	otherJobRoleInput.style.display = 'none';
 	setShirtColorOptions();
 	// hide span that displays the total
@@ -98,7 +126,6 @@ shirtDesignSelect.addEventListener('change', function() {
 });
 
 /* ”Register for Activities” section */
-
 // add event listener to all the checkboxes
 for (let i = 0; i < activityCheckboxes.length; i++) {
 	activityCheckboxes[i].addEventListener('change', () => {
@@ -149,7 +176,6 @@ function totalCost() {
 }
 
 /* "Payment Info" section */
-
 paymentSelect.addEventListener('change', () => {
 	const selected = paymentSelect.value.replace(' ', '-');
 	displayPayment(selected);
@@ -164,30 +190,7 @@ function displayPayment(paymentOption) {
 	document.getElementById(paymentOption).style.display = '';
 	document.getElementById(paymentOption).classList.remove('hide');
 }
-/* Form Validation
-
-If any of the following validation errors exist, prevent the user from submitting the form:
-
-   
-   
-    - If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
-        - Credit Card field should only accept a number between 13 and 16 digits.
-        - The Zip Code field should accept a 5-digit number.
-        - The CVV should only accept a number that is exactly 3 digits long. 
-        
-	Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.*/
-
-// function inputValidationTest(element, message) {
-// 	if (!element.value.length > 0) {
-// 		element.classList.add('invalid');
-// 		element.placeholder = message;
-// 		return true;
-// 	} else {
-// 		element.classList.remove('invalid');
-// 		element.placeholder = '';
-// 		return false;
-// 	}
-// }
+/* Form Validation */
 
 function activityChecked() {
 	for (let i = 0; i < activityCheckboxes.length; i++) {
@@ -200,32 +203,6 @@ function activityChecked() {
 	activitySpan.classList.add('invalid');
 	activitySpan.classList.remove('hide');
 }
-
-const validators = {
-	name        : {
-		regex         : /^[a-z]+$/i,
-		badPatternTip : 'Name can only contain letters',
-		emptyTip      : 'Please enter your name'
-	},
-	email       : {
-		regex         : /^[^@]+@[^@]+\.[a-z]+$/i,
-		badPatternTip : 'Please enter a valid email: "person@sample.com"',
-		emptyTip      : 'Please enter your email'
-	},
-	creditCard  : {
-		regex         : /^(\d{4} ?){3}\d{1,4}$/,
-		badPatternTip : 'A valid credit card number is between 13 and 16 digits',
-		emptyTip      : 'Please enter your credit card information'
-	},
-	mailingCode : {
-		regex         : /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i,
-		badPatternTip : 'Please a Zip code: 5-digits or Postal Code: "A0A 0A0"'
-	},
-	cvv         : {
-		regex         : /^\d{3}$/,
-		badPatternTip : 'Please enter the 3-digit CVV that can be found on the back of your card'
-	}
-};
 
 // code modified from Treehouse Regex Course
 function createListener(validator) {
@@ -253,11 +230,14 @@ function createListener(validator) {
 	};
 }
 
-userNameInput.addEventListener('input', createListener(validators.name));
-userEmailInput.addEventListener('input', createListener(validators.email));
-ccNumInput.addEventListener('input', createListener(validators.creditCard));
-zipInput.addEventListener('input', createListener(validators.mailingCode));
-cvvInput.addEventListener('input', createListener(validators.cvv));
+function setupInputListeners(validators) {
+	for (let i = 0; i < inputs.length; i++) {
+		const id = inputs[i].id.replace('-', '');
+		if (validators[id]) {
+			inputs[i].addEventListener('input', createListener(validators[id]));
+		}
+	}
+}
 
 function checkIfInvalid(elem) {
 	return elem.classList.contains('invalid');
@@ -267,16 +247,10 @@ form.addEventListener('submit', () => {
 	let isValid = true;
 	let scrollTo;
 
-	const inputs = document.getElementsByTagName('input');
+	// manually trigger all the input events
 	for (let i = 0; i < inputs.length; i++) {
 		inputs[i].dispatchEvent(new Event('input'));
 	}
-	// manually trigger all the input events
-	// userNameInput.dispatchEvent(new Event('input'));
-	// userEmailInput.dispatchEvent(new Event('input'));
-	// ccNumInput.dispatchEvent(new Event('input'));
-	// zipInput.dispatchEvent(new Event('input'));
-	// cvvInput.dispatchEvent(new Event('input'));
 
 	// if credit card selected validate credit card fields
 	if (paymentSelect.value === 'credit card') {
@@ -284,21 +258,24 @@ form.addEventListener('submit', () => {
 		if (checkIfInvalid(zipInput)) isValid = false;
 		if (checkIfInvalid(cvvInput)) isValid = false;
 	}
-
+	// check if at least one activity was selected
 	if (!activityChecked()) {
 		isValid = false;
 		scrollTo = document.querySelector('.activities');
 	}
-
+	// check if a valid email was given
 	if (checkIfInvalid(userEmailInput)) {
 		isValid = false;
 		scrollTo = document.querySelector('fieldset');
 	}
+	// check if a valid name was given
 	if (checkIfInvalid(userNameInput)) {
 		isValid = false;
 		scrollTo = document.querySelector('fieldset');
 	}
 
+	// scroll to element if any was set
 	if (scrollTo) scrollTo.scrollIntoView({ behavior: 'smooth' });
+	// if anything failed validation prevent form submission
 	if (!isValid) event.preventDefault();
 });
