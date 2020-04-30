@@ -3,25 +3,28 @@ Treehouse Techdegree:
 FSJS project 3 - Interactive Form
 ******************************************/
 
-/* Form works without JavaScript - Progressive Enhancement
-
-    The user should still have access to all form fields and payment information if JS isn't working for whatever reason. For example, when the JS is removed from the project:
-        The “Other” text field under the "Job Role" section should be visible
-        All information for Bitcoin, PayPal or Credit Card payments should be visible. */
-
+// Global variables for form elements
 const form = document.querySelector('form');
+// Basic info elements
 const userNameInput = document.getElementById('name');
 const userEmailInput = document.getElementById('mail');
 const userTitleSelect = document.getElementById('title');
 const otherJobRoleInput = document.getElementById('other-title');
+// T-shirt info Elements
 const shirtDesignSelect = document.getElementById('design');
+// Activity elements
 const activityCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
-const paymentSelect = document.getElementById('payment');
+// create span at bottom of activity checklist to show messages
 const activitySpan = document.createElement('span');
 activitySpan.classList.add('total');
 document.querySelector('.activities').appendChild(activitySpan);
+// Payment elements
+const paymentSelect = document.getElementById('payment');
+const ccNumInput = document.getElementById('cc-num');
+const zipInput = document.getElementById('zip');
+const cvvInput = document.getElementById('cvv');
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
 	otherJobRoleInput.style.display = 'none';
 	setShirtColorOptions();
 	// hide span that displays the total
@@ -32,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	paymentSelect.options[0].disabled = true;
 	// show credit card payment section and hide the rest
 	displayPayment('credit-card');
-});
+}
+
+init();
 
 /* ”Job Role” section */
 userTitleSelect.addEventListener('change', function() {
@@ -163,9 +168,8 @@ function displayPayment(paymentOption) {
 
 If any of the following validation errors exist, prevent the user from submitting the form:
 
-    - Name field can't be blank.
-    - Email field must be a validly formatted e-mail address (you don't have to check that it's a real e-mail address, just that it's formatted like one: dave@teamtreehouse.com for example. \w+@\w+\.\w
-    - User must select at least one checkbox under the "Register for Activities" section of the form.
+   
+   
     - If the selected payment option is "Credit Card," make sure the user has supplied a Credit Card number, a Zip Code, and a 3 number CVV value before the form can be submitted.
         - Credit Card field should only accept a number between 13 and 16 digits.
         - The Zip Code field should accept a 5-digit number.
@@ -173,90 +177,128 @@ If any of the following validation errors exist, prevent the user from submittin
         
 	Make sure your validation is only validating Credit Card info if Credit Card is the selected payment method.*/
 
-function toggleInputValidationTip(test, element, message) {
-	if (!test) {
-		element.classList.add('invalid');
-		element.placeholder = message;
-	} else {
-		element.classList.remove('invalid');
-		element.placeholder = '';
-		return true;
-	}
-}
-
-function nameEntered() {
-	if (toggleInputValidationTip(userNameInput.value.length > 0, userNameInput, 'Please enter your name')) return true;
-}
-
-function emailEntered() {
-	if (toggleInputValidationTip(userEmailInput.value.length > 0, userEmailInput, 'Please enter your email'))
-		return true;
-}
+// function inputValidationTest(element, message) {
+// 	if (!element.value.length > 0) {
+// 		element.classList.add('invalid');
+// 		element.placeholder = message;
+// 		return true;
+// 	} else {
+// 		element.classList.remove('invalid');
+// 		element.placeholder = '';
+// 		return false;
+// 	}
+// }
 
 function activityChecked() {
 	for (let i = 0; i < activityCheckboxes.length; i++) {
 		if (activityCheckboxes[i].checked) {
 			return true;
-		} else {
-			// show error message
-			activitySpan.textContent = 'Please select at least one activity';
-			activitySpan.classList.add('invalid');
-			activitySpan.classList.remove('hide');
 		}
 	}
+	// show error message
+	activitySpan.textContent = 'Please select at least one activity';
+	activitySpan.classList.add('invalid');
+	activitySpan.classList.remove('hide');
 }
 
-function isEmailValid(email) {
-	return /^[^@]+@[^@]+\.[a-z]+$/i.test(email);
+const validators = {
+	name        : {
+		regex         : /^[a-z]+$/i,
+		badPatternTip : 'Name can only contain letters',
+		emptyTip      : 'Please enter your name'
+	},
+	email       : {
+		regex         : /^[^@]+@[^@]+\.[a-z]+$/i,
+		badPatternTip : 'Please enter a valid email: "person@sample.com"',
+		emptyTip      : 'Please enter your email'
+	},
+	creditCard  : {
+		regex         : /^(\d{4} ?){3}\d{1,4}$/,
+		badPatternTip : 'A valid credit card number is between 13 and 16 digits',
+		emptyTip      : 'Please enter your credit card information'
+	},
+	mailingCode : {
+		regex         : /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i,
+		badPatternTip : 'Please a Zip code: 5-digits or Postal Code: "A0A 0A0"'
+	},
+	cvv         : {
+		regex         : /^\d{3}$/,
+		badPatternTip : 'Please enter the 3-digit CVV that can be found on the back of your card'
+	}
+};
+
+// code modified from Treehouse Regex Course
+function createListener(validator) {
+	return event => {
+		const targetElem = event.target;
+		const text = targetElem.value;
+		const label = targetElem.previousElementSibling;
+		const showEmptyTip = !text;
+		const showBadPatternTip = !validator.regex.test(text);
+		const emptyTip = validator.emptyTip;
+		const badPatternTip = validator.badPatternTip;
+		if (showEmptyTip) {
+			if (emptyTip) targetElem.placeholder = emptyTip;
+			targetElem.classList.add('invalid');
+		} else if (showBadPatternTip) {
+			if (badPatternTip) label.setAttribute('data-tip', badPatternTip);
+			targetElem.classList.add('invalid');
+			label.classList.add('invalid');
+		} else {
+			label.setAttribute('data-tip', '');
+			targetElem.placeholder = '';
+			targetElem.classList.remove('invalid');
+			label.classList.remove('invalid');
+		}
+	};
 }
 
-function isCreditCardValid(cc) {
-	// Credit card is between 13 and 16 digits
-	return /^\d{13, 16}$/.test(cc);
-}
+userNameInput.addEventListener('input', createListener(validators.name));
+userEmailInput.addEventListener('input', createListener(validators.email));
+ccNumInput.addEventListener('input', createListener(validators.creditCard));
+zipInput.addEventListener('input', createListener(validators.mailingCode));
+cvvInput.addEventListener('input', createListener(validators.cvv));
 
-function isMailingCodeValid(code) {
-	// Zip Code is 5-digits
-	// or Postal Code is letter/number/letter[optional space]number/letter/number
-	return /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i.test(code);
-}
-function isCVVvalid(cvv) {
-	// CVV is 3 digits
-	return /^\d{3}$/.test(cvv);
+function checkIfInvalid(elem) {
+	return elem.classList.contains('invalid');
 }
 
 form.addEventListener('submit', () => {
-	let isValid = false;
+	let isValid = true;
 	let scrollTo;
-	const name = nameEntered();
-	const email = emailEntered();
-	if (activityChecked()) {
-		isValid = true;
-	} else {
-		scrollTo = document.querySelector('.activities')
+
+	const inputs = document.getElementsByTagName('input');
+	for (let i = 0; i < inputs.length; i++) {
+		inputs[i].dispatchEvent(new Event('input'));
 	}
-	// if (name && email) {
-	// 	isValid = true;
-	// } else {
-	// 	isValid = false;
-	// 	scrollTo = document.querySelector('fieldset');
-	// }
+	// manually trigger all the input events
+	// userNameInput.dispatchEvent(new Event('input'));
+	// userEmailInput.dispatchEvent(new Event('input'));
+	// ccNumInput.dispatchEvent(new Event('input'));
+	// zipInput.dispatchEvent(new Event('input'));
+	// cvvInput.dispatchEvent(new Event('input'));
+
+	// if credit card selected validate credit card fields
+	if (paymentSelect.value === 'credit card') {
+		if (checkIfInvalid(ccNumInput)) isValid = false;
+		if (checkIfInvalid(zipInput)) isValid = false;
+		if (checkIfInvalid(cvvInput)) isValid = false;
+	}
+
+	if (!activityChecked()) {
+		isValid = false;
+		scrollTo = document.querySelector('.activities');
+	}
+
+	if (checkIfInvalid(userEmailInput)) {
+		isValid = false;
+		scrollTo = document.querySelector('fieldset');
+	}
+	if (checkIfInvalid(userNameInput)) {
+		isValid = false;
+		scrollTo = document.querySelector('fieldset');
+	}
 
 	if (scrollTo) scrollTo.scrollIntoView({ behavior: 'smooth' });
 	if (!isValid) event.preventDefault();
 });
-
-/* Form validation messages
-
-    Provide some kind of indication when there’s a validation error. The field’s borders could turn red, for example, or even better for the user would be if a red text message appeared near the field.
-    The following fields should have some obvious form of an error indication:
-        Name field
-        Email field
-        Register for Activities checkboxes (at least one must be selected)
-        Credit Card number (Only if Credit Card payment method is selected)
-        Zip Code (Only if Credit Card payment method is selected)
-        CVV (Only if Credit Card payment method is selected)
-
-
-
-Note: If a user tries to submit an empty form, there should be an error indication or message displayed for the name field, the email field, the activity section, and the credit card fields if credit card is the selected payment method. */

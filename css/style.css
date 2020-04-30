@@ -275,6 +275,13 @@ input.invalid {
 	background-color: var(--color-super-pale-pink);
 }
 
+.invalid::after {
+	content: attr(data-tip);
+	padding-left: 1em;
+	color: var(--color-pink);
+	transition: all .3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
 span.invalid {
 	color: var(--color-super-pale-pink);
 	background-color: var(--color-pink);
