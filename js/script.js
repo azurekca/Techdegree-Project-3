@@ -214,6 +214,10 @@ function createListener(validator) {
 		const showBadPatternTip = !validator.regex.test(text);
 		const emptyTip = validator.emptyTip;
 		const badPatternTip = validator.badPatternTip;
+
+		// reset
+		label.removeAttribute('data-tip');
+		label.classList.remove('invalid');
 		if (showEmptyTip) {
 			if (emptyTip) targetElem.placeholder = emptyTip;
 			targetElem.classList.add('invalid');
@@ -222,10 +226,9 @@ function createListener(validator) {
 			targetElem.classList.add('invalid');
 			label.classList.add('invalid');
 		} else {
-			label.setAttribute('data-tip', '');
+			label.removeAttribute('data-tip');
 			targetElem.placeholder = '';
 			targetElem.classList.remove('invalid');
-			label.classList.remove('invalid');
 		}
 	};
 }

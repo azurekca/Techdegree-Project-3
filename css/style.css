@@ -67,6 +67,7 @@ button {
 
 fieldset {
 	margin-top: 1.5em;
+	position: relative;
 }
 
 legend,
@@ -153,7 +154,7 @@ input[type="checkbox"] {
 .activities label {
 	margin: 0;
 	font-size: 1.2em;
-	transition: all .3s linear;
+	transition: all .2s linear;
 }
 
 .activities label:hover {
@@ -228,6 +229,10 @@ select option {
 	max-width: 680px;
 }
 
+div {
+	position: relative;
+}
+
 .shirt div {
 	float: left;
 	margin-right: .85em;
@@ -275,11 +280,21 @@ input.invalid {
 	background-color: var(--color-super-pale-pink);
 }
 
-.invalid::after {
+label.invalid::before {
 	content: attr(data-tip);
-	padding-left: 1em;
-	color: var(--color-pink);
-	transition: all .3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+	border-radius: 5px;
+	font-size: 1.3em;
+	text-align: center;
+	position: absolute;
+	background: var(--color-pink);
+	left: 0;
+	width: auto;
+	padding: 7px 10px;
+	color: var(--color-super-pale-pink);
+}
+
+div>label.invalid::before {
+	bottom: 3em;
 }
 
 span.invalid {
