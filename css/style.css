@@ -58,6 +58,10 @@ form {
 	background: var(--color-pale-pink);
 }
 
+div {
+	position: relative;
+}
+
 fieldset,
 legend,
 button {
@@ -100,6 +104,7 @@ label {
 input {
 	padding: .8em;
 	background: var(--color-yellow);
+	height: 3em;
 }
 
 select {
@@ -124,6 +129,7 @@ select {
 	border: 2px solid var(--color-med-green);
 	border-radius: 3px;
 	outline: none;
+	transition: all 0.2s linear;
 }
 
 input:focus,
@@ -145,6 +151,7 @@ select:focus {
 input[type="checkbox"],
 input[type="radio"] {
 	display: inline-block;
+	height: auto;
 }
 
 input[type="checkbox"] {
@@ -216,8 +223,10 @@ select option {
 }
 
 .hide {
-	padding: 0;
+	padding: 0 !important;
 	height: 0;
+	border: 0;
+	overflow: hidden;
 }
 
 /* ================================= 
@@ -227,10 +236,6 @@ select option {
 .container {
 	margin: auto;
 	max-width: 680px;
-}
-
-div {
-	position: relative;
 }
 
 .shirt div {
@@ -272,9 +277,11 @@ div {
 .bitcoin p {
 	color: var(--color-dark-blue);
 }
+
 /* ================================= 
   Validation Tip Styles
 ==================================== */
+
 input.invalid {
 	border-color: var(--color-pink);
 	background-color: var(--color-super-pale-pink);
@@ -293,7 +300,7 @@ label.invalid::before {
 	color: var(--color-super-pale-pink);
 }
 
-div>label.invalid::before {
+div > label.invalid::before {
 	bottom: 3em;
 }
 
@@ -326,6 +333,9 @@ span.invalid {
 @media (min-width: 0) and (max-width: 679px) {
 	header {
 		padding: 2em 0;
+	}
+	#title {
+		width: 100%;
 	}
 }
 

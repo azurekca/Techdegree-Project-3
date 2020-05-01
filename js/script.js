@@ -42,7 +42,7 @@ const validators = {
 	ccnum : {
 		regex         : /^(\d{4} ?){3}\d{1,4}$/,
 		badPatternTip : 'A valid credit card number is between 13 and 16 digits',
-		emptyTip      : 'Please enter your credit card information'
+		emptyTip      : 'Please enter your credit card details'
 	},
 	zip   : {
 		regex         : /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i,
@@ -61,7 +61,9 @@ function init() {
 	// add event listeners to inputs for validation
 	setupInputListeners(validators);
 	// hide job role - other
-	otherJobRoleInput.style.display = 'none';
+	otherJobRoleInput.classList.add('hide');
+	// hide t-shirt color dropdown and change label
+	setShirtColorOptions();
 	// hide span that displays the total
 	activitySpan.classList.add('hide');
 	// select credit card payment method as default
@@ -78,9 +80,9 @@ init();
 // add event listener to job role select to show/hide 'other' field
 userTitleSelect.addEventListener('change', function() {
 	if (this.value === 'other') {
-		otherJobRoleInput.style.display = '';
+		otherJobRoleInput.classList.remove('hide');
 	} else {
-		otherJobRoleInput.style.display = 'none';
+		otherJobRoleInput.classList.add('hide');
 	}
 });
 
@@ -206,11 +208,9 @@ function displayPayment(paymentOption) {
 	// first hide all the payment option sections
 	for (let i = 1; i < paymentSelect.options.length; i++) {
 		const option = paymentSelect.options[i].value.replace(' ', '-');
-		document.getElementById(option).style.display = 'none';
 		document.getElementById(option).classList.add('hide');
 	}
 	// then show just the selected payment option section
-	document.getElementById(paymentOption).style.display = '';
 	document.getElementById(paymentOption).classList.remove('hide');
 }
 
