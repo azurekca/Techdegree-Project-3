@@ -30,7 +30,7 @@ const cvvInput = document.getElementById('cvv');
  */
 const validators = {
 	name  : {
-		regex         : /^[a-z]+$/i,
+		regex         : /^[a-z]+ ?[a-z]*$/i,
 		badPatternTip : 'Name can only contain letters',
 		emptyTip      : 'Please enter your name'
 	},
@@ -45,7 +45,7 @@ const validators = {
 		emptyTip      : 'Please enter your credit card details'
 	},
 	zip   : {
-		regex         : /(^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)/i,
+		regex         : /^\d{5}$/i, // regex for zip and postal code (^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)
 		badPatternTip : 'Please a Zip code: 5-digits or Postal Code: "A0A 0A0"'
 	},
 	cvv   : {
