@@ -16,7 +16,7 @@
 - payment information is shown depending on selection
 - credit card information is validated only if credit card payment is selected
 
-Custom CSS styles added to colour schem using CSS variables
-Custom validation messages shown using CSS variables
-Transitions added for improved user experience
+- Custom CSS styles added to colour schem using CSS variables
+- Custom validation messages shown using CSS variables
+- Transitions added for improved user experience
 
