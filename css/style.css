@@ -15,7 +15,7 @@
   Base Element Styles
 ==================================== */
 
-/* @import url('https://fonts.googleapis.com/css?family=Nunito|Roboto+Mono'); */
+@import url('https://fonts.googleapis.com/css?family=Nunito|Roboto+Mono');
 
 * {
 	box-sizing: border-box;

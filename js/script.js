@@ -45,8 +45,8 @@ const validators = {
 		emptyTip      : 'Please enter your credit card details'
 	},
 	zip   : {
-		regex         : /^\d{5}$/i, // regex for zip and postal code (^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)
-		badPatternTip : 'Please a Zip code: 5-digits or Postal Code: "A0A 0A0"'
+		regex         : /^\d{5}$/, // regex for zip and postal code (^\d{5}$|^[a-z]\d[a-z] ?\d[a-z]\d$)
+		badPatternTip : 'Please enter 5-digit Zip Code'
 	},
 	cvv   : {
 		regex         : /^\d{3}$/,
@@ -60,7 +60,7 @@ const validators = {
 function init() {
 	// add event listeners to inputs for validation
 	setupInputListeners(validators);
-	// hide job role - other
+	// hide job role - other input field
 	otherJobRoleInput.classList.add('hide');
 	// hide t-shirt color dropdown and change label
 	setShirtColorOptions();
